@@ -1,9 +1,11 @@
 const express = require('express');
-const app = express();
+
 const bodyParser = require('body-parser');
 const env = require('dotenv');
 const mongoose = require('mongoose');
 
+
+const app = express();
 
 const MovieRoutes = require('./routes/movie.routes');
 env.config();
@@ -20,7 +22,7 @@ app.get('/home', (req,res) => {
     return res.json({
         sucess: true,
         message : 'Fetched Sucessfully'
-    })
+    });
 });
 
 async function startServer() {
