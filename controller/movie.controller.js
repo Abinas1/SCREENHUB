@@ -1,12 +1,25 @@
 const Movie = require('../models/movie.model');
 
-
+const MovieServices = require('../Services/movie.service');
 /*
     Controller function to create a new movie in the database.
     @param req: {name, description, casts, trailerUrl, language, releaseDate, director, releaseStatus}
     @param res: JSON response with success status and created movie data.
 
 */
+const errorResponseBody = {
+    err:{},
+    data:{},
+    message:'Error in searching the movie',
+    success: false
+}
+const successResponseBody = {
+    err:{},
+    data:{},
+    message:'successfully fetched the movie details',
+    success:true
+}
+
 const createMovie = async (req, res) =>{
     try{
         const movie = await Movie.create(req.body);
@@ -32,14 +45,14 @@ const deleteMovie = async(req, res) => {
             _id:req.params.id
         });
         return res.status(200).json({
-            sucess:true,
+            success:true,
             message: 'Successfully deleted the movie.'
         });
     }
     catch(err){
         console.log(err);
         return res.status(500).json({
-            sucess: false,
+            success: false,
             message: 'Error in deleting the movie',
             error:err
         });
@@ -47,20 +60,18 @@ const deleteMovie = async(req, res) => {
 }
 const getMovie = async(req, res) =>{
     try{
-        const movie = await Movie.findById(req.params.id);
-        return res.status(200).json({
-            sucess: true,
-            message:'Sucessfully fetched the movie details',
-            data:movie
-        });
+        
+        const response = await MovieServices.getMovie(req.params.id);
+        
+        if(response.err){
+            errorResponseBody.err = response.err;
+            return res.status(response.code).json(errorResponseBody);
+        }
+        successResponseBody.data = response;
+        return res.status(200).json(successResponseBody);
     }
     catch(err){
-        console.log(err);
-        return res.status(500).json({
-            sucess:false,
-            error: err,
-            message: 'Error in searching the movie'
-        })
+        return res.status(500).json(errorResponseBody);
     }
 }
 
