@@ -77,9 +77,27 @@ const updateMovie = async (req, res) =>{
         return res.status(500).json(errorResponseBody);
     }
 }
+const getMoviesByName = async (req, res) =>{
+    try{
+        const response = await MovieServices.fetchMovies(req.query);
+        console.log(response);
+        if(response.err){
+            errorResponseBody.err = response.err;
+            return res.status(response.code).json(errorResponseBody);
+        }
+        else{
+            successResponseBody.data = response;
+            return res.status(500).json(successResponseBody);
+        }
+    }
+    catch(err){
+        errorResponseBody.err = err;
+        return res.status(500).json(errorResponseBody);
+    }
+}
 
 module.exports = {
-    createMovie,deleteMovie,getMovie, updateMovie
+    createMovie,deleteMovie,getMovie, updateMovie, getMoviesByName
 }
 
 

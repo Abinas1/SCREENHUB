@@ -53,9 +53,30 @@ const updateMovie = async (id, data) =>{
         throw error;
     }
 }
+
+const fetchMovies = async(filter) =>{
+    try{
+        let query = {}
+        if(filter.name){
+            query.name = filter.name;
+        }
+        let movies = await Movie.find(query);
+        if(!movies){
+            return {
+                err:'Not able to find the queries movies',
+                code:404
+            };
+        }
+        return movies;
+    }
+    catch(error){
+        throw error;
+    }
+}
 module.exports = {
     getMovie,
     createMovie,
     deleteMovie,
-    updateMovie
+    updateMovie,
+    fetchMovies
 }
