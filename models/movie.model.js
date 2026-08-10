@@ -8,7 +8,8 @@ const movieSchema = new mongoose.Schema({
     },
     description:{
         type: String,
-        required: true
+        required: true,
+        minLength :10
     },
     casts:{
         type: [String],
