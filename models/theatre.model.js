@@ -16,7 +16,7 @@ const theatreSchema = new mongoose.Schema({
         required: true
     },
     address : String
-}, {timestamp : true}),
+}, {timestamp : true});
 
 const Theatre = mongoose.model('Theatre', theatreSchema);
 
