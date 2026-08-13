@@ -53,6 +53,20 @@ const getAllTheatre = async (req, res)=>{
         return res.status(500).json(errorResponseBody);
     }
 }
+
+const deleteTheatre = async (req, res) =>{
+    try{
+        const response = await theatreService.deleteTheatre(req.params.id);
+        successResponseBody.data = response;
+        successResponseBody.message = "Sucessfully deleted the theatre";
+        return res.status(200).json(successResponseBody);
+    }
+    catch(error){
+        errorResponseBody.err = error.err;
+        console.log(error);
+        return res.status(500).json(errorResponseBody);
+    }
+}
 module.exports = {
-    create, getTheatre, getAllTheatre
+    create, getTheatre, getAllTheatre, deleteTheatre
 }
