@@ -24,8 +24,11 @@ const create = async (req, res) =>{
 const getTheatre = async (req, res) =>{
     try{
         const response = await theatreService.getTheatre(req.params.id);
+
+        console.log(response);
         if(response.err){
             errorResponseBody.err = response.err;
+            errorResponseBody.message = "";
             return res.status(response.code).json(errorResponseBody);
         }
         successResponseBody.data = response;
@@ -41,15 +44,20 @@ const getTheatre = async (req, res) =>{
 
 const getAllTheatre = async (req, res)=>{
     try{
-        const response = await theatreService.getAllTheatre();
-        console.log(response);
+        const response = await theatreService.getAllTheatre(req.query);
+        if(response.err){
+            errorResponseBody.err = response.err;
+            errorResponseBody.message = "";
+            return res.status(response.code).json(errorResponseBody);
+        }
         successResponseBody.data = response;
         successResponseBody.message = "Successfully fetch all the movies";
         return res.status(200).json(successResponseBody);
     }
     catch(error){
         //console.log(error);
-        errorResponseBody.err = error;
+        errorResponseBody.err = error.err;
+
         return res.status(500).json(errorResponseBody);
     }
 }

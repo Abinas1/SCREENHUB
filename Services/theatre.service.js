@@ -42,13 +42,36 @@ const getTheatre = async (id) =>{
     }
 }
 
-const getAllTheatre = async ()=>{
+const getAllTheatre = async (data)=>{
     try{
+        let query = {};
+        let pagination = {};
+        pagination.limit = 2;
+        //city is present in query params or not
+        if(data && data.city){
+            query.city = data.city;
+        }
+        //pincode is present in query params or not
+        if(data && data.pincode){
+            query.pincode = data.pincode;
+        }
+        //name is present in query params or not
+
+        if(data && data.name){
+            query.name = data.name;
+        }
+
+        if(data && data.limit){
+            pagination.limit = data.limit;
+        }
+
+        if(data && data.page){
+            pagination.skip = data.page * pagination.limit;
+        }
+        const response = await Theatre.find(query, {}, pagination);
         
-        const response = await Theatre.find({});
-        console.log(response);
-        if(!response){
-            throw {err: "No theatre exists in the database",
+        if(!response || response.length == 0){
+            return {err: "No theatre exists in the database",
                 code:404
             }
         }
@@ -81,9 +104,9 @@ const updateMoviesInTheatre = async (theatreId, movieIds, insert) => {
     try{
         const theatre = await Theatre.findById(theatreId);
         
-        if(!theatre){
+        if(!theatre || theatre.length == 0){
             throw {
-                err: "No Such theatre found dor the id provided.",
+                err: "No Such theatre found for the id provided.",
                 code: 404
             };
         }
