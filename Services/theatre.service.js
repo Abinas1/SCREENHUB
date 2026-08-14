@@ -1,5 +1,10 @@
 const Theatre = require('../models/theatre.model');
 
+
+/*
+@param data ->object containing details of new theatre
+@returns -> return the new theatre object
+*/
 const createTheatre = async (data) =>{
     try{
         const response = await Theatre.create(data);
@@ -72,6 +77,43 @@ const deleteTheatre = async (id) =>{
     }
 }
 
+const updateMoviesInTheatre = async (theatreId, movieIds, insert) => {
+    try{
+        const theatre = await Theatre.findById(theatreId);
+        
+        if(!theatre){
+            throw {
+                err: "No Such theatre found dor the id provided.",
+                code: 404
+            };
+        }
+        if(insert){
+            movieIds.forEach(movieId =>{
+                theatre.movies.push(movieId);
+            });
+        }
+        else{
+            theatre.movies = theatre.movies.filter(
+            savedMovieId =>
+                !movieIds.some(
+                    movieId =>
+                        savedMovieId.toString() === movieId.toString()
+                )
+        )}
+         console.log("Before save:", theatre.movies);
+        await theatre.save();
+        console.log("After save:", theatre.movies);
+        return theatre.populate('movies');
+    }
+    catch(err){
+        throw  err;
+    }
+}
+
 module.exports = {
-    createTheatre, getTheatre, getAllTheatre, deleteTheatre
+    createTheatre, 
+    getTheatre, 
+    getAllTheatre, 
+    deleteTheatre, 
+    updateMoviesInTheatre
 }

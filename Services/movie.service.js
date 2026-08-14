@@ -1,4 +1,9 @@
 const Movie = require('../models/movie.model');
+/*
+@param data ->object containing details of new movie
+@returns -> return the new movie object
+*/
+
 const createMovie = async (data) =>{
     try{
         const movie = await Movie.create(data);
