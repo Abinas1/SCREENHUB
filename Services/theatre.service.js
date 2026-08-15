@@ -105,14 +105,19 @@ const updateMoviesInTheatre = async (theatreId, movieIds, insert) => {
         const theatre = await Theatre.findById(theatreId);
         
         if(!theatre || theatre.length == 0){
-            throw {
+            return {
                 err: "No Such theatre found for the id provided.",
                 code: 404
             };
         }
         if(insert){
+            let previousMovies = new Set(theatre.movies.map(movieId => movieId.toString()));
+            console.log(previousMovies);
             movieIds.forEach(movieId =>{
-                theatre.movies.push(movieId);
+                if(!previousMovies.has(movieId)){
+                    theatre.movies.push(movieId);
+                }
+                
             });
         }
         else{

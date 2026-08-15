@@ -90,7 +90,7 @@ const updateMovies = async (req, res) => {
     catch(err){
         console.log(err);
         errorResponseBody.err = err;
-        return res.status(500).json(errResponseBody);
+        return res.status(500).json(errorResponseBody);
     }
 }
 module.exports = {
