@@ -1,5 +1,7 @@
 const Theatre = require('../models/theatre.model');
 
+const Movie = require('../models/movie.model');
+
 
 /*
 @param data ->object containing details of new theatre
@@ -61,10 +63,21 @@ const getAllTheatre = async (data)=>{
             query.name = data.name;
         }
 
+        if(data && data.movieId){
+            //movie object
+            let movie = await Movie.findById(data.movieId);
+            if(!movie){
+                throw {err:"Movie does not exists",
+                    code : 404 
+                }
+            }
+            query.movies = data.movieId;
+        }
+
         if(data && data.limit){
             pagination.limit = data.limit;
         }
-
+        
         if(data && data.page){
             pagination.skip = data.page * pagination.limit;
         }
