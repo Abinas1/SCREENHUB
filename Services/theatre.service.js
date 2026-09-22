@@ -151,10 +151,50 @@ const updateMoviesInTheatre = async (theatreId, movieIds, insert) => {
     }
 }
 
+const getMoviesInATheatre = async (id) => {
+    try{
+        console.log(id);
+        const response = await Theatre.findById(id, {name:1, movies:1});
+        if(!(response)){
+            return {
+                err: "No theatre with the given id found",
+                code : 404
+            }
+        }
+        return response;
+    }catch(error){
+        console.log(error);
+        throw error;
+    }
+}
+const checkMovieInATheatre = async (theatreId, movieId) =>{
+    try{
+        const response = await Theatre.findById(theatreId);
+        if(!response){
+            return {
+                err: "No such theatre exists for given id.",
+                code:404
+            }
+        }
+        const movieExists = response.movies.some(
+            movie => movie.toString() === movieId
+        );
+
+
+        return movieExists;
+    }
+    catch(error){
+        console.log(error);
+        throw error;
+    }
+}
+
 module.exports = {
     createTheatre, 
     getTheatre, 
     getAllTheatre, 
     deleteTheatre, 
-    updateMoviesInTheatre
+    updateMoviesInTheatre,
+    getMoviesInATheatre,
+    checkMovieInATheatre
 }
