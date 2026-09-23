@@ -10,6 +10,9 @@ const app = express();
 const MovieRoutes = require('./routes/movie.routes');
 
 const theatreRoutes = require('./routes/theatre.routes');
+
+const authRoutes = require('./routes/auth.routes');
+
 env.config();
 
 
@@ -19,6 +22,7 @@ app.use(bodyParser.json());
 //Invoking Movie Routes and passing the app instance to it
 MovieRoutes(app);
 theatreRoutes(app);
+authRoutes(app);
 
 app.get('/home', (req,res) => {
     console.log('Hitting /home route');

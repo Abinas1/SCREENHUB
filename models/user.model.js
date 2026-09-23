@@ -24,7 +24,7 @@ const userSchema = new mongoose.Schema({
         default:"CUSTOMER"
     },
     userStatus: {
-        typre:String,
+        type:String,
         required: true,
         default: "APPROVED"
     }
