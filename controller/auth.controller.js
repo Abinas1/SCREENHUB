@@ -10,6 +10,11 @@ const signup = async (req, res) =>{
     }
     catch(error){
         console.log(error);
+        if(error.err){
+            errorResponseBody.err=error.err;
+            errorResponseBody.message = "Please provide valid input";
+            return res.status(error.code).json(errorResponseBody);
+        }
         errorResponseBody.err = error;
         errorResponseBody.message = "Signup failed.";
         return res.status(500).json(errorResponseBody);
