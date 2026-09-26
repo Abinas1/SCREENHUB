@@ -2,7 +2,7 @@
 const errorResponseBody = {
     err:{},
     data:{},
-    message:'Error in searching the movie',
+    message:'Something went wrong',
     success: false
 }
 //This object will be used to building success response
@@ -10,7 +10,7 @@ const errorResponseBody = {
 const successResponseBody = {
     err:{},
     data:{},
-    message:'successfully fetched the movie details',
+    message:'successfully fetched the details',
     success:true
 }
 
