@@ -53,4 +53,36 @@ const signin = async(req, res) =>{
     }
 }
 
-module.exports = {signup, signin}
+const resetPassword = async (req, res) =>{
+    try{
+        const user = await UserService.getUserById(req.user);
+        
+        const isOldPasswordCorrect = await user.isValidPassword(req.body.oldPassword);
+        if(!isOldPasswordCorrect){
+            throw {err:"Invalid old password", code :403};
+        }
+        user.password = req.body.newPassword;
+        await user.save();
+        successResponseBody.data = user;
+        return res.status(200).json(successResponseBody);
+    }
+    catch(error){
+        console.log(error);
+        if(error.err){
+            errorResponseBody.err = error.err;
+            return res.status(error.code).json(errorResponseBody);
+        }
+        if(error.name == 'ValidationError'){
+            let err = {};
+            Object.keys(error.errors).forEach((key)=>{
+                err[key] = error.errors[key].message;
+            });
+            errorResponseBody.err = err;
+            return res.status(422).json(errorResponseBody);
+        }
+        errorResponseBody.err = error.err;
+        return res.status(500).json(errorResponseBody);
+    }
+}
+
+module.exports = {signup, signin, resetPassword}

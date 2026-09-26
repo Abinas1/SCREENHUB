@@ -44,7 +44,6 @@ const isAuthenticated = async (req, res, next) => {
             errorResponsebody.err = "Token not verified.";
             return res.status(401).json(errorResponseBody);
         }
-        console.log(response);
         const user = await userService.getUserById(response.id);
         req.user = user.id;
         next();
@@ -55,7 +54,7 @@ const isAuthenticated = async (req, res, next) => {
             errorResponseBody.err = "User does not exist.";
             return res.status(404).json(errorResponseBode);
         }
-        if(error.name == "JsonWebTokenError"){
+        if(error.name == "JsonWebTokenError" || error.name == "TokenExpiredError"){
             errorResponseBody.err = error.message;
             return res.status(401).json(errorResponseBody);
         }
@@ -63,9 +62,20 @@ const isAuthenticated = async (req, res, next) => {
     }
 }
 
+const ValidateResetPassword = async (req, res, next) => {
+    if(!req.body.oldPassword){
+        errorResponseBody.err = "OldPassword is required to reset the password";
+        return res.status(400).json(errorResponseBody);
+    }
+    if(!req.body.newPassword){
+        errorResponseBody.err = "Please provide the new password";
+        return res.status(400).json(errorResponseBody);
+    }
+    next();
+}
 
 module.exports = {
-    ValidateSignupRequest, ValidateSigninRequest, isAuthenticated
+    ValidateSignupRequest, ValidateSigninRequest, isAuthenticated, ValidateResetPassword
 }
 
 const x = "ghgf";
