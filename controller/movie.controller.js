@@ -38,8 +38,12 @@ const deleteMovie = async(req, res) => {
         successResponseBody.message = "Successfully deleted the Movie";
         return res.status(200).json(successResponseBody);
     }
-    catch(err){
-        console.log(err);
+    catch(error){
+        console.log(error);
+        if(error.code){
+            errorResponseBody.err = error.err;
+            return res.status(error.code).json(errorResponseBody);
+        }
         return res.status(500).json(errorResponseBody);
     }
 }

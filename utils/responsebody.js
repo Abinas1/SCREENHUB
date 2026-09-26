@@ -1,20 +1,20 @@
 //This object will be used to building error response
 const errorResponseBody = {
-    err:{},
-    data:{},
-    message:'Something went wrong',
+    err: {},
+    data: {},
+    message: 'Something went wrong',
     success: false
 }
 //This object will be used to building success response
 
 const successResponseBody = {
-    err:{},
-    data:{},
-    message:'successfully fetched the details',
-    success:true
+    err: {},
+    data: {},
+    message: 'successfully fetched the movie details',
+    success: true
 }
 
 module.exports = {
-    errorResponseBody,    
+    errorResponseBody,
     successResponseBody
 } 
