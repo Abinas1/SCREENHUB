@@ -1,3 +1,5 @@
+const jwt = require('jsonwebtoken'); 
+
 const UserService = require('../Services/user.service');
 const {successResponseBody, errorResponseBody} = require('../utils/responsebody');
 
@@ -20,6 +22,35 @@ const signup = async (req, res) =>{
         return res.status(500).json(errorResponseBody);
     }
 }
+const signin = async(req, res) =>{
+    try{
+        const response = await UserService.getUserByEmail(req.body.email);
+        const isValidPassword = await response.isValidPassword(req.body.password);
 
+        if(!isValidPassword){
+            errorResponseBody.err = "Invalid password for the given email";
+            return res.status(401).json(errorResponseBody);
+        }
+        const token = jwt.sign({id:response.id, email: response.email}, process.env.AUTH_KEY, {expiresIn: "1h"});
+        
+        successResponseBody.message = "Successfully Logied in";
+        successResponseBody.data = {
+            email : response.email,
+            role : response.userRole,
+            status: response.status,
+            token : token
+        }
+        return res.status(200).json(successResponseBody);
 
-module.exports = {signup}
+    }catch(error){
+        console.log(error);
+        errorResponseBody.err = error.err;
+        errorResponseBody.message = "Log in Failed.";
+        if(error.err){
+            return res.status(error.code).json(errorResponseBody);
+        }
+        return res.status(500).json(errorResponseBody);
+    }
+}
+
+module.exports = {signup, signin}
