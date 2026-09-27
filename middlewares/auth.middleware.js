@@ -73,11 +73,17 @@ const ValidateResetPassword = async (req, res, next) => {
     }
     next();
 }
-
-module.exports = {
-    ValidateSignupRequest, ValidateSigninRequest, isAuthenticated, ValidateResetPassword
+const ValidateUpdateUser = async (req, res, next) =>{
+    if(!req.body.userRole && !req.body.userStatus){
+        errorResponseBody.err = "Please provide the user role or user status to update.";
+        return res.status(400).json(errorResponseBody);
+    }
+    next();
 }
 
-const x = "ghgf";
+module.exports = {
+    ValidateSignupRequest, ValidateSigninRequest, isAuthenticated, ValidateResetPassword, ValidateUpdateUser
+}
+
 
 
