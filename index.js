@@ -13,6 +13,8 @@ const theatreRoutes = require('./routes/theatre.routes');
 
 const authRoutes = require('./routes/auth.routes');
 
+const userRoutes = require('./routes/user.routes');
+
 env.config();
 
 
@@ -23,6 +25,7 @@ app.use(bodyParser.json());
 MovieRoutes(app);
 theatreRoutes(app);
 authRoutes(app);
+userRoutes(app);
 
 app.get('/home', (req,res) => {
     console.log('Hitting /home route');
