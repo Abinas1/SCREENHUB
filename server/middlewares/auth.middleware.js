@@ -1,6 +1,7 @@
 const { errorResponseBody } = require('../utils/responsebody');
 const jwt = require('jsonwebtoken');
 const userService = require('../Services/user.service');
+const {USER_ROLE} = require('../utils/constraints');
 const ValidateSignupRequest = async (req, res, next) => {
     if (!req.body.name) {
         errorResponseBody.err = "Name of the user is not provided.";
@@ -80,9 +81,43 @@ const ValidateUpdateUser = async (req, res, next) =>{
     }
     next();
 }
+const isAdmin = async (req, res, next) =>{
+    console.log(req.user);
+    const user = await userService.getUserById(req.user);
+    if(user.userRole!= USER_ROLE.admin){
+        errorResponseBody.err = "User is not an admin.";
+        return res.status(401).json(errorResponseBody);
+    }
+    next();
+}
+
+const isClient = async (req, res, next) =>{
+    const user = await userService.getUserById(req.user);
+    if(user.userRole!= USER_ROLE.client){
+        errorResponseBody.err = "User is not a Client.";
+        return res.status(401).json(errorResponseBody);
+    }
+    next();
+}
+
+const isAdminOrClient = async (req, res, next) =>{
+    const user = await userService.getUserById(req.user);
+    if(user.userRole!= USER_ROLE.admin && user.userRole!= USER_ROLE.client ){
+        errorResponseBody.err = "User is not an admin as well as client.";
+        return res.status(401).json(errorResponseBody);
+    }
+    next();
+}
 
 module.exports = {
-    ValidateSignupRequest, ValidateSigninRequest, isAuthenticated, ValidateResetPassword, ValidateUpdateUser
+    ValidateSignupRequest, 
+    ValidateSigninRequest, 
+    isAuthenticated, 
+    ValidateResetPassword, 
+    ValidateUpdateUser, 
+    isAdmin, 
+    isClient, 
+    isAdminOrClient 
 }
 
 
