@@ -5,12 +5,32 @@ const MovieMiddlewares = require('../middlewares/movie.middlewares');
 const authMiddleWare = require('../middlewares/auth.middleware');
 
 const routes = (app) =>{
-    app.post('/mba/api/v1/movies',MovieMiddlewares.validateMovieCreateRequest, MovieController.createMovie);
-    app.delete('/mba/api/v1/movies/:id', authMiddleWare.isAuthenticated, MovieController.deleteMovie);
-    app.get('/mba/api/v1/movies/:id', MovieController.getMovie); 
-    app.put('/mba/api/v1/movies/:id',MovieController.updateMovie);
-    app.patch('/mba/api/v1/movies/:id',MovieController.updateMovie);
-    app.get('/mba/api/v1/movies',MovieController.getMoviesByName)
+    app.post('/mba/api/v1/movies',
+        authMiddleWare.isAuthenticated,
+        authMiddleWare.isAdminOrClient,
+        MovieMiddlewares.validateMovieCreateRequest, 
+        MovieController.createMovie);
+        
+    app.delete('/mba/api/v1/movies/:id', 
+        authMiddleWare.isAuthenticated, 
+        authMiddleWare.isAdminOrClient,
+        MovieController.deleteMovie);
+
+    app.get('/mba/api/v1/movies/:id', 
+        MovieController.getMovie); 
+
+    app.put('/mba/api/v1/movies/:id',
+        authMiddleWare.isAuthenticated, 
+        authMiddleWare.isAdminOrClient,
+        MovieController.updateMovie);
+
+    app.patch('/mba/api/v1/movies/:id',
+        authMiddleWare.isAuthenticated, 
+        authMiddleWare.isAdminOrClient,
+        MovieController.updateMovie);
+
+    app.get('/mba/api/v1/movies',
+        MovieController.getMoviesByName)
 }
 
 module.exports = routes;

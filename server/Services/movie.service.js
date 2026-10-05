@@ -1,4 +1,5 @@
 const Movie = require('../models/movie.model');
+const {STATUS} = require('../utils/constraints');
 /*
 @param data ->object containing details of new movie
 @returns -> return the new movie object
@@ -15,7 +16,7 @@ const createMovie = async (data) => {
             Object.keys(error.errors).forEach((key) => {
                 err[key] = error.errors[key].message;
             });
-            return { err: err, code: 422 };
+            throw { err: err, code: STATUS.UNPROCESSABLE_ENTITY };
         }
         throw error;
     }
@@ -25,7 +26,7 @@ const deleteMovie = async (id) => {
     try {
         const response = await Movie.findByIdAndDelete(id);
         if(!response){
-            throw {err:"Movie not found", code:404};
+            throw {err:"Movie not found", code:STATUS.NOT_FOUND};
         }
         return response;
     }
@@ -38,15 +39,15 @@ const getMovie = async (id) => {
     try {
         const movie = await Movie.findById(id);
         if (!movie) {
-            return {
+            throw {
                 err: 'No Movie found for this corresponding id',
-                code: 404
+                code: STATUS.NOT_FOUND
             }
         };
         return movie;
     }
-    catch (err) {
-        console.log(err);
+    catch (error) {
+        throw error;
     }
 }
 
@@ -61,7 +62,7 @@ const updateMovie = async (id, data) => {
             Object.keys(error.errors).forEach((key) => {
                 err[key] = error.errors[key].message;
             });
-            return { err: err, code: 422 };
+            throw { err: err, code: STATUS.UNPROCESSABLE_ENTITY };
         }
         console.log(error);
         throw error;
@@ -76,9 +77,9 @@ const fetchMovies = async (filter) => {
         }
         let movies = await Movie.find(query);
         if (!movies) {
-            return {
+            throw {
                 err: 'Not able to find the queries movies',
-                code: 404
+                code: STATUS.NOT_FOUND
             };
         }
         return movies;

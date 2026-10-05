@@ -22,7 +22,7 @@ const createUser = async(data) =>{
             Object.keys(error.errors).forEach((key)=>{
                 err[key] = error.errors[key].message;
             });
-            throw {err: err, code:422};
+            throw {err: err, code:STATUS.UNPROCESSABLE_ENTITY};
         }
         throw error;
     }
@@ -32,7 +32,7 @@ const getUserByEmail = async (email) =>{
     try{
         const response = await User.findOne({email:email});
         if(!response){
-            throw {err:"No such user exists", code:404}
+            throw {err:"No such user exists", code:STATUS.NOT_FOUND}
         }
         return response;
     }catch(error){
@@ -44,7 +44,7 @@ const getUserById = async (id) => {
     try{
         const response = await User.findById(id);
         if(!response){
-            throw {err:"No user found for the given id", code:404};
+            throw {err:"No user found for the given id", code:STATUS.NOT_FOUND};
         }
         return response;
     }
@@ -61,7 +61,7 @@ const updateUserRoleStatus = async (data, id) => {
             _id:id
         }, updateQuery, {returnDocument: 'after', runValidators:true});
         if(!response){
-            throw {err:"User not found", code:404};
+            throw {err:"User not found", code:STATUS.NOT_FOUND};
         }
         return response;
 

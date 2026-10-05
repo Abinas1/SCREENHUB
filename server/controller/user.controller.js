@@ -1,12 +1,13 @@
 const userService = require('../Services/user.service');
 const {errorResponseBody, successResponseBody} = require('../utils/responsebody');
+const {STATUS} = require('../utils/constraints');
 
 const update = async(req, res) =>{
     try{
         const response = await userService.updateUserRoleStatus(req.body, req.params.id);
         successResponseBody.data = response;
         successResponseBody.message = "Successfully update the user";
-        return res.status(200).json(successResponseBody);
+        return res.status(STATUS.OK).json(successResponseBody);
     }
     catch(error){
         console.log(error);
@@ -16,7 +17,7 @@ const update = async(req, res) =>{
                 err[key] = error.errors[key].message;
             });
             errorResponseBody.err = err;
-            return res.status(422).json(errorResponseBody);
+            return res.status(STATUS.UNPROCESSABLE_ENTITY).json(errorResponseBody);
         }
             errorResponseBody.err = error.err;
             return res.status(error.code).json(errorResponseBody);

@@ -2,13 +2,14 @@ const jwt = require('jsonwebtoken');
 
 const UserService = require('../Services/user.service');
 const {successResponseBody, errorResponseBody} = require('../utils/responsebody');
+const {STATUS} = require('../utils/constraints');
 
 const signup = async (req, res) =>{
     try{
         const response =await UserService.createUser(req.body);
         successResponseBody.message = "Successfully register the user";
         successResponseBody.data = response;
-        return res.status(201).json(successResponseBody);
+        return res.status(STATUS.CREATED).json(successResponseBody);
     }
     catch(error){
         console.log(error);
@@ -19,7 +20,7 @@ const signup = async (req, res) =>{
         }
         errorResponseBody.err = error;
         errorResponseBody.message = "Signup failed.";
-        return res.status(500).json(errorResponseBody);
+        return res.status(STATUS.INTERNAL_SERVER_ERROR).json(errorResponseBody);
     }
 }
 const signin = async(req, res) =>{
@@ -29,7 +30,7 @@ const signin = async(req, res) =>{
 
         if(!isValidPassword){
             errorResponseBody.err = "Invalid password for the given email";
-            return res.status(401).json(errorResponseBody);
+            return res.status(STATUS.UNAUTHORISED).json(errorResponseBody);
         }
         const token = jwt.sign({id:response.id, email: response.email}, process.env.AUTH_KEY, {expiresIn: "1h"});
         
@@ -40,7 +41,7 @@ const signin = async(req, res) =>{
             status: response.status,
             token : token
         }
-        return res.status(200).json(successResponseBody);
+        return res.status(STATUS.OK).json(successResponseBody);
 
     }catch(error){
         console.log(error);
@@ -49,7 +50,7 @@ const signin = async(req, res) =>{
         if(error.err){
             return res.status(error.code).json(errorResponseBody);
         }
-        return res.status(500).json(errorResponseBody);
+        return res.status(STATUS.INTERNAL_SERVER_ERROR).json(errorResponseBody);
     }
 }
 
@@ -59,12 +60,12 @@ const resetPassword = async (req, res) =>{
         
         const isOldPasswordCorrect = await user.isValidPassword(req.body.oldPassword);
         if(!isOldPasswordCorrect){
-            throw {err:"Invalid old password", code :403};
+            throw {err:"Invalid old password", code :STATUS.FORBIDDEN};
         }
         user.password = req.body.newPassword;
         await user.save();
         successResponseBody.data = user;
-        return res.status(200).json(successResponseBody);
+        return res.status(STATUS.OK).json(successResponseBody);
     }
     catch(error){
         console.log(error);
@@ -78,10 +79,10 @@ const resetPassword = async (req, res) =>{
                 err[key] = error.errors[key].message;
             });
             errorResponseBody.err = err;
-            return res.status(422).json(errorResponseBody);
+            return res.status(STATUS.UNPROCESSABLE_ENTITY).json(errorResponseBody);
         }
         errorResponseBody.err = error.err;
-        return res.status(500).json(errorResponseBody);
+        return res.status(STATUS.INTERNAL_SERVER_ERROR).json(errorResponseBody);
     }
 }
 
