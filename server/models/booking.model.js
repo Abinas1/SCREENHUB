@@ -33,10 +33,10 @@ const bookingSchema = new mongoose.Schema({
         type: String,
         required : true,
         enum : {
-            values : ['IN_PROCESS', 'CANCELLED', 'SUCCESSFUL'],
+            values : [BOOKING_STATUS.processing, BOOKING_STATUS.cancelled, BOOKING_STATUS.successful],
             message : "Invalid booking status"
         },
-        default : 'IN_PROCESS'
+        default : BOOKING_STATUS.processing
     }
 }, {timestamps:true});
 
