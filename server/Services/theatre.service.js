@@ -2,6 +2,8 @@ const Theatre = require('../models/theatre.model');
 
 const Movie = require('../models/movie.model');
 
+const {STATUS} = require('../utils/constraints');
+
 
 /*
 @param data ->object containing details of new theatre
@@ -19,7 +21,7 @@ const createTheatre = async (data) =>{
             Object.keys(error.errors).forEach((key) =>{
                 err[key] = error.errors[key].message;
             });
-            return {err:err, code:422};
+            throw {err:err, code:STATUS.UNPROCESSABLE_ENTITY};
         }
         throw err; 
     }
@@ -31,9 +33,9 @@ const getTheatre = async (id) =>{
         const response = await Theatre.findById(id);
         console.log(id);
         if(!response){
-            return {
+            throw {
                 err:"No theatre found for the id",
-                code: 404
+                code: STATUS.NOT_FOUND
             }
         }
         return response;
@@ -68,7 +70,7 @@ const getAllTheatre = async (data)=>{
             let movie = await Movie.findById(data.movieId);
             if(!movie){
                 throw {err:"Movie does not exists",
-                    code : 404 
+                    code : STATUS.NOT_FOUND 
                 }
             }
             query.movies = data.movieId;
@@ -84,8 +86,8 @@ const getAllTheatre = async (data)=>{
         const response = await Theatre.find(query, {}, pagination);
         
         if(!response || response.length == 0){
-            return {err: "No theatre exists in the database",
-                code:404
+            throw {err: "No theatre exists in the database",
+                code:STATUS.NOT_FOUND
             }
         }
         return response;
@@ -103,7 +105,7 @@ const deleteTheatre = async (id) =>{
         if(!response){
             throw {
                 err: "No theatre exists for the corresponding id.",
-                code: 404
+                code: STATUS.NOT_FOUND
             }
         }
     }
@@ -118,9 +120,9 @@ const updateMoviesInTheatre = async (theatreId, movieIds, insert) => {
         const theatre = await Theatre.findById(theatreId);
         
         if(!theatre || theatre.length == 0){
-            return {
+            throw {
                 err: "No Such theatre found for the id provided.",
-                code: 404
+                code: STATUS.NOT_FOUND
             };
         }
         if(insert){
@@ -156,9 +158,9 @@ const getMoviesInATheatre = async (id) => {
         console.log(id);
         const response = await Theatre.findById(id, {name:1, movies:1});
         if(!(response)){
-            return {
+            throw {
                 err: "No theatre with the given id found",
-                code : 404
+                code : STATUS.NOT_FOUND
             }
         }
         return response;
@@ -171,9 +173,9 @@ const checkMovieInATheatre = async (theatreId, movieId) =>{
     try{
         const response = await Theatre.findById(theatreId);
         if(!response){
-            return {
+            throw {
                 err: "No such theatre exists for given id.",
-                code:404
+                code:STATUS.NOT_FOUND
             }
         }
         const movieExists = response.movies.some(
