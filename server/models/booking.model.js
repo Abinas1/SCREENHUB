@@ -4,17 +4,17 @@ const {BOOKING_STATUS} = require('../utils/constraints');
 
 const bookingSchema = new mongoose.Schema({
     theatreId : {
-        type: mongoose.Schema.Type.ObjectId,
+        type: mongoose.Schema.Types.ObjectId,
         required : true,
         ref:'Theatre'
     },
     movieId : {
-        type :mongoose.Schema.Type.ObjectId,
+        type :mongoose.Schema.Types.ObjectId,
         required : true,
         ref : 'Movie'
     },
     userId : {
-        type: mongoose.Schema.Type.ObjectId,
+        type: mongoose.Schema.Types.ObjectId,
         required:true,
         ref: "User"
     },
